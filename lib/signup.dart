@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'firebase.dart';
 
 class Mysignup extends StatefulWidget {
   const Mysignup({Key? key}) : super(key: key);
@@ -8,8 +10,15 @@ class Mysignup extends StatefulWidget {
 }
 
 class _MysignupState extends State<Mysignup> {
+  String email='';
+  String password='';
+  String name='';
+  bool _obscureText = true;
+
+  final pass = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -55,6 +64,9 @@ class _MysignupState extends State<Mysignup> {
                     ),
                     SizedBox(height: 30),
                     TextField(
+                      onChanged: (value){
+                        email=value;
+                      },
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -68,6 +80,9 @@ class _MysignupState extends State<Mysignup> {
                     ),
                     SizedBox(height: 30),
                     TextField(
+                      onChanged: (value){
+                        password=value;
+                      },
                       obscureText: true,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
@@ -93,8 +108,24 @@ class _MysignupState extends State<Mysignup> {
                         CircleAvatar(
                           radius: 30,
                           backgroundColor: Color(0xff4c505b),
-                          child: IconButton(
-                            onPressed: () {},
+                          child:
+                          IconButton(
+                            onPressed: () {
+                              AuthenticationHelper()
+                                  .signUp(email: email, password: password)
+                                    .then((result) {
+                                  if (result == null) {
+                                    Navigator.pushNamed(context, 'home');
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                      result,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ));
+                                }
+                              });
+                            },
                             color: Colors.white,
                             icon: Icon(Icons.arrow_forward),
                           ),
